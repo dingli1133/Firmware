@@ -107,7 +107,7 @@ px4_add_board(
 		mtd
 		#nshterm
 		param
-		perf
+		#perf
 		pwm
 		reboot
 		#reflect
