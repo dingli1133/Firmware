@@ -517,8 +517,24 @@ UavcanNode::start(uavcan::NodeID node_id, uint32_t bitrate)
 	static CanInitHelper *can = nullptr;
 
 	if (can == nullptr) {
+		uint32_t enabled_interfaces =  1 << 0;
+#if UAVCAN_STM32_NUM_IFACES  > 1
 
-		can = new CanInitHelper();
+		if (PX4_MFT_HW_SUPPORTED(PX4_MFT_CAN2)) {
+			enabled_interfaces |= 1 << 1;
+		}
+
+#endif
+#if UAVCAN_STM32_NUM_IFACES  > 2
+
+		if (PX4_MFT_HW_SUPPORTED(PX4_MFT_CAN3)) {
+			enabled_interfaces |= 1 << 2;
+		}
+
+#endif
+
+
+		can = new CanInitHelper(enabled_interfaces);
 
 		if (can == nullptr) {                    // We don't have exceptions so bad_alloc cannot be thrown
 			PX4_ERR("Out of memory");
